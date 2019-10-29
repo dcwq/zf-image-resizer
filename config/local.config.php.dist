@@ -1,0 +1,15 @@
+<?php
+
+namespace Rvdlee\ZfImageResizer;
+
+use Zend\Validator\File\Extension;
+use Zend\Validator\File\IsImage;
+use Zend\Validator\File\MimeType;
+
+return [
+    'rvdlee' => [
+        'zf-image-resizer' => [
+
+        ],
+    ],
+];

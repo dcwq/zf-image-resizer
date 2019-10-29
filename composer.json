@@ -1,0 +1,44 @@
+{
+  "name": "rvdlee/zf-image-resizer",
+  "description": "A package that allows you resize images with programs like ImageMagick.",
+  "keywords": [
+    "zf3",
+    "image resizer",
+    "ImageMagick",
+    "zend framework 3"
+  ],
+  "homepage": "https://thoughtforcoding.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rob van der Lee",
+      "email": "epicsoftworks@gmail.com",
+      "homepage": "https://thoughtforcoding.com/"
+    }
+  ],
+  "require": {
+    "php": "^7.2 || ^7.3",
+    "zendframework/zend-modulemanager": "^2.8",
+    "zendframework/zend-servicemanager": "^2.7.8 || ^3.3",
+    "zendframework/zend-filter": "^2.9",
+    "zendframework/zend-validator": "*",
+    "zendframework/zend-stdlib": "^3.2",
+    "zendframework/zend-log": "^2.11"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rvdlee\\ZfImageResizer\\": "src/"
+    },
+    "classmap": [
+      "src/Module.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rvdlee\\ZfImageResizer\\Test\\": "tests"
+    }
+  }
+}
