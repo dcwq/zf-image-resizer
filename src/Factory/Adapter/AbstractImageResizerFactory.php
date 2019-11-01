@@ -14,13 +14,13 @@ abstract class AbstractImageResizerFactory implements FactoryInterface
         $config = $container->get('config');
 
         $binaryOptions = [];
-        if (isset($config['rvdlee']['zf-image-resizer'][$requestedName]['binary-options'])) {
-            $binaryOptions = $config['rvdlee']['zf-image-resizer'][$requestedName]['binary-options'];
+        if (isset($config['rvdlee']['zf-image-resizer']['binary-options'])) {
+            $binaryOptions = $config['rvdlee']['zf-image-resizer']['binary-options'];
         }
 
         $validatorChain = [];
-        if (isset($config['rvdlee']['zf-image-resizer'][$requestedName]['validator-chain'])) {
-            $validatorChainConfigs = $config['rvdlee']['zf-image-resizer'][$requestedName]['validator-chain'];
+        if (isset($config['rvdlee']['zf-image-resizer']['validator-chain'])) {
+            $validatorChainConfigs = $config['rvdlee']['zf-image-resizer']['validator-chain'];
 
             $validatorChain = new ValidatorChain();
             /** @var array $validatorChainConfig */

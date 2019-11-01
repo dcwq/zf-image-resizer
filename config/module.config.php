@@ -2,9 +2,12 @@
 
 namespace Rvdlee\ZfImageResizer;
 
+use Rvdlee\ZfImageResizer\Adapter\ImageMagick;
 use Rvdlee\ZfImageResizer\Controller\ConsoleController;
+use Rvdlee\ZfImageResizer\Factory\Adapter\ImageMagickFactory;
 use Rvdlee\ZfImageResizer\Factory\Controller\ConsoleControllerFactory;
 use Rvdlee\ZfImageResizer\Factory\Filter\ImageResizerFactory;
+use Rvdlee\ZfImageResizer\Factory\Service\ImageResizerServiceFactory;
 use Rvdlee\ZfImageResizer\Filter\ImageResizer;
 use Rvdlee\ZfImageResizer\Service\ImageResizerService;
 
@@ -31,8 +34,9 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            ImageResizerService::class => ImageResizerFactory::class,
-            Gifsicle::class  => GifsicleFactory::class,
+            ImageResizerService::class => ImageResizerServiceFactory::class,
+
+            ImageMagick::class  => ImageMagickFactory::class,
         ],
     ],
     'filters'   => [

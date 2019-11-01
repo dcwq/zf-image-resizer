@@ -30,13 +30,18 @@ class ImageResizerService
         $this->setLogger($logger);
         $this->getLogger()->info('Constucting ImageResizerService');
 
-        if ( ! $adapter instanceof ImageResizerInterface) {
+        if (!$adapter instanceof ImageResizerInterface) {
             throw new InvalidArgumentException(
                 sprintf('Adapter configured does not have the %s interface.', ImageResizerInterface::class)
             );
         }
 
-       $this->setAdapter($adapter);
+        $this->setAdapter($adapter);
+    }
+
+    public function resizeImage(string $imagePath)
+    {
+        return $this->getAdapter()->resizeCommand(new Image($imagePath));
     }
 
     /**
@@ -60,7 +65,7 @@ class ImageResizerService
     /**
      * @return LoggerInterface
      */
-    public function getLogger() : LoggerInterface
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -70,7 +75,7 @@ class ImageResizerService
      *
      * @return ImageResizerService
      */
-    public function setLogger(LoggerInterface $logger) : ImageResizerService
+    public function setLogger(LoggerInterface $logger): ImageResizerService
     {
         $this->logger = $logger;
 
