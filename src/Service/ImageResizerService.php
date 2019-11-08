@@ -39,10 +39,86 @@ class ImageResizerService
         $this->setAdapter($adapter);
     }
 
-    public function resizeImage(string $imagePath)
+    /**
+     * @param string $imagePath
+     * @param int    $newWidth
+     * @param int    $newHeight
+     * @param bool   $returnBase64
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function resizeImage(string $imagePath, int $newWidth = 0, int $newHeight = 0, bool $returnBase64 = false): string
     {
-        return $this->getAdapter()->resizeCommand(new Image($imagePath));
+        /** @var Image $image */
+        $image = new Image($imagePath, $newWidth, $newHeight);
+
+        /**
+         * If the image already exists, return the path and notify via logger
+         */
+        if (file_exists($image->getTargetPath())) {
+            $this->getLogger()->info('Image already exists, not resizing...');
+            return $image->getTargetPath();
+        }
+
+        try {
+            if ($this->getAdapter()->canHandle($imagePath)) {
+                /** @var string $command */
+                $command = $this->getAdapter()->resizeCommand($image, $returnBase64);
+
+                $this->getLogger()->info(sprintf('Handling %s via %s', $imagePath, get_class($this->getAdapter())));
+                $output = shell_exec(sprintf('%s 2>&1', $command));
+                $this->getLogger()->info($output);
+            }
+        } catch (Exception $exception) {
+            $this->getLogger()->err(
+                sprintf('Exception when handling %s to via %s', $imagePath, get_class($this->getAdapter()))
+            );
+        }
+
+        return $image->getTargetPath();
     }
+
+    /**
+     * @param string $imagePath
+     * @param int    $cropWidth
+     * @param int    $cropHeight
+     * @param string $mode
+     * @param int    $x
+     * @param int    $y
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function cropImage(string $imagePath, int $cropWidth, int $cropHeight, string $mode = Image::MANUAL_CROP, int $x = 0, int $y = 0): string
+    {
+        /** @var Image $image */
+        $image = new Image($imagePath, $cropWidth, $cropHeight, $mode, $x, $y);
+
+        /**
+         * If the image already exists, return the path and notify via logger
+         */
+        if (file_exists($image->getTargetPath())) {
+            $this->getLogger()->info('Image already exists, not resizing...');
+            return $image->getTargetPath();
+        }
+
+        try {
+            if ($this->getAdapter()->canHandle($imagePath)) {
+                /** @var string $command */
+                $command = $this->getAdapter()->cropCommand($image, $mode, $x, $y);
+
+                $this->getLogger()->info(sprintf('Handling %s via %s', $imagePath, get_class($this->getAdapter())));
+                $output = shell_exec(sprintf('%s 2>&1', $command));
+                $this->getLogger()->info($output);
+            }
+        } catch (Exception $exception) {
+            $this->getLogger()->err(
+                sprintf('Exception when handling %s to via %s', $imagePath, get_class($this->getAdapter()))
+            );
+        }
+
+        return $image->getTargetPath();
+    }
+
 
     /**
      * @return ImageResizerInterface

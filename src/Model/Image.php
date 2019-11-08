@@ -45,6 +45,11 @@ class Image
     protected $path;
 
     /**
+     * @var string
+     */
+    protected $targetPath;
+
+    /**
      * @var SplFileInfo
      */
     protected $splFileInfo;
@@ -83,35 +88,85 @@ class Image
      * Image constructor.
      *
      * @param string $path
-     *
+     * @param int    $targetWidth
+     * @param int    $targetHeight
+     * @param string $cropMode
+     * @param int    $x
+     * @param int    $y
      * @throws InvalidArgumentException
      */
-    public function __construct(string $path)
+    public function __construct(string $path, int $targetWidth, int $targetHeight, string $cropMode = self::CENTERED_CROP, int $x = 0, int $y = 0)
     {
+        // Check if given path exists
         if (!file_exists($path)) {
             throw new InvalidArgumentException(sprintf('The provided file(%s) does not exist.', $path));
         }
 
-        list($width, $height) = getimagesize($this->getPath());
+        // Get the original image dimensions
+        list($width, $height) = getimagesize($path);
 
+        // Calculate the ratio
+        $ratio = ($width < $height ? $width : $height) / ($width > $height ? $width : $height);
+
+        // If either of these is not set, scale to ratio
+        if ($targetWidth === 0 || $targetHeight === 0) {
+            if ($targetWidth === 0) {
+                $targetWidth = $width * $ratio;
+            }
+
+            if ($targetHeight === 0) {
+                $targetHeight = $height * $ratio;
+            }
+        }
+
+        // Prep this model
         $this->setPath($path)
              ->setSplFileInfo(new SplFileInfo($path))
              ->setOriginalWidth($width)
              ->setOriginalHeight($height)
-             ->calculateCropPositions(self::CENTERED_CROP);
+             ->setTargetWidth($targetWidth)
+             ->setTargetHeight($targetHeight)
+             ->calculateCropPositions($cropMode, $x, $y);
+
+        // Create a new unique name based on the image vectors
+        $targetPath = str_replace(
+            $this->getSplFileInfo()->getFilename(),
+            sprintf(
+                '%s.%s',
+                hash(
+                    'sha256',
+                    sprintf(
+                        '%s%d%d%d%d',
+                        explode('.', $this->getSplFileInfo()->getFilename())[0],
+                        $this->getTargetWidth(),
+                        $this->getTargetHeight(),
+                        $this->getCropPositionX(),
+                        $this->getCropPositionY()
+                    )
+                ),
+                $this->getSplFileInfo()->getExtension()
+            ),
+            $this->getPath()
+        );
+
+        // Set this
+        $this->setTargetPath($targetPath);
     }
 
     /**
      * @param string $cropMode
      * @param int    $cropPositionX
      * @param int    $cropPositionY
+     * @return Image
      * @throws InvalidArgumentException
      */
     public function calculateCropPositions(
         string $cropMode = self::CENTERED_CROP,
         int $cropPositionX = 0,
         int $cropPositionY = 0
-    ) {
+    ) : Image
+    {
+        // Check if we've recieved a valid crop modus
         if (!in_array($cropMode, self::CROP_MODUS)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -122,42 +177,58 @@ class Image
             );
         }
 
+        // If we want to manually control the crop just set it and return this (fluent interface)
+        if ($cropMode === self::MANUAL_CROP) {
+            return $this->setCropPositionX($cropPositionX)->setCropPositionY($cropPositionY);
+        }
+
         // These need to be set with actual values
         if ($this->getTargetWidth() === 0 || $this->getTargetHeight() === 0) {
             throw new InvalidArgumentException('TargetWidth and TargetHeight cannot be 0.');
         }
 
-        // Calculate ratio to make accurate crop positions
-        $ratio = $this->getOriginalWidth() / $this->getOriginalHeight();
-
+        // Do some automatic (lazy) crop calculations
         switch ($cropMode) {
             case self::UPPER_LEFT_CROP:
                 $cropPositionX = 0;
                 $cropPositionY = 0;
             break;
             case self::UPPER_MIDDLE_CROP:
-                $cropPositionX = ($this->getOriginalWidth()) - ($this->getTargetWidth() / 2)z;
+                $cropPositionX = ($this->getOriginalWidth() / 2) - ($this->getTargetWidth() / 2);
                 $cropPositionY = 0;
             break;
             case self::UPPER_RIGHT_CROP:
-                $cropPositionX = 0;
+                $cropPositionX = $this->getOriginalWidth() - $this->getTargetWidth();
                 $cropPositionY = 0;
             break;
+            case self::MIDDLE_LEFT_CROP:
+                $cropPositionX = 0;
+                $cropPositionY = ($this->getOriginalHeight() / 2) - ($this->getTargetHeight() / 2);
+            break;
+            case self::CENTERED_CROP:
+                $cropPositionX = ($this->getOriginalWidth() / 2) - ($this->getTargetWidth() / 2);
+                $cropPositionY = ($this->getOriginalHeight() / 2) - ($this->getTargetHeight() / 2);
+            break;
+            case self::MIDDLE_RIGHT_CROP:
+                $cropPositionX = $this->getOriginalWidth() - $this->getTargetWidth();
+                $cropPositionY = ($this->getOriginalHeight() / 2) - ($this->getTargetHeight() / 2);
+            break;
+            case self::BOTTOM_LEFT:
+                $cropPositionX = 0;
+                $cropPositionY = $this->getOriginalHeight() - $this->getTargetHeight();
+            break;
+            case self::BOTTOM_MIDDLE:
+                $cropPositionX = ($this->getOriginalWidth() / 2) - ($this->getTargetWidth() / 2);
+                $cropPositionY = $this->getOriginalHeight() - $this->getTargetHeight();
+            break;
+            case self::BOTTOM_RIGHT:
+                $cropPositionX = $this->getOriginalWidth() - $this->getTargetWidth();
+                $cropPositionY = $this->getOriginalHeight() - $this->getTargetHeight();
+            break;
         }
-    }
 
-
-    public function calculateResize()
-    {
-
-    }
-
-    /**
-     * Check if the parameters have been set to resize or crop the image.
-     */
-    public function validateImage()
-    {
-
+        // Set the calculated crop positions and return this (fluent interface)
+        return  $this->setCropPositionX($cropPositionX)->setCropPositionY($cropPositionY);
     }
 
     /**
@@ -177,6 +248,24 @@ class Image
     {
         $this->path = $path;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetPath(): string
+    {
+        return $this->targetPath;
+    }
+
+    /**
+     * @param string $targetPath
+     * @return Image
+     */
+    public function setTargetPath(string $targetPath): Image
+    {
+        $this->targetPath = $targetPath;
         return $this;
     }
 

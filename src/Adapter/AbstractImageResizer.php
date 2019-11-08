@@ -2,6 +2,7 @@
 
 namespace Rvdlee\ZfImageResizer\Adapter;
 
+use Exception;
 use Rvdlee\ZfImageResizer\Interfaces\ImageResizerInterface;
 use Rvdlee\ZfImageResizer\Model\Image;
 use Zend\Validator\ValidatorChain;
@@ -35,9 +36,28 @@ abstract class AbstractImageResizer implements ImageResizerInterface
             ->setValidatorChain($validatorChain);
     }
 
-    public function resizeCommand(Image $image) : string
+    /**
+     * @param Image $image
+     * @param bool  $returnBase64
+     * @return string
+     * @throws Exception
+     */
+    public function resizeCommand(Image $image, bool $returnBase64 = false): string
     {
-        return sprintf('%s %s %s', $this->getBinaryPath(), implode(' ', $this->getBinaryOptions()), $image->getPath());
+        throw new Exception('This method has not been implemented yet.');
+    }
+
+    /**
+     * @param Image  $image
+     * @param string $mode
+     * @param int    $x
+     * @param int    $y
+     * @return string
+     * @throws Exception
+     */
+    public function cropCommand(Image $image, string $mode = Image::MANUAL_CROP, int $x = 0, int $y = 0): string
+    {
+        throw new Exception('This method has not been implemented yet.');
     }
 
     /**
