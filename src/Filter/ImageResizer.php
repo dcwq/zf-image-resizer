@@ -20,25 +20,24 @@ class ImageResizer extends AbstractFilter
     protected $options = [
         'mode'          => Image::ONLY_RESIZE_MODUS,
         'crop_mode'     => Image::CENTERED_CROP,
-        'target_height' => 0,
-        'target_width'  => 0,
+        'resize_width'  => 0,
+        'resize_height' => 0,
+        'crop_width'    => 0,
+        'crop_height'   => 0,
         'x'             => 0,
         'y'             => 0,
     ];
-
-    public function __construct()
-    {
-        $this->setOptions(array_merge($this->options, $options));
-    }
 
     /**
      * ImageResizer constructor.
      *
      * @param ImageResizerService $imageResizerService
+     * @param array               $options
      */
-    public function __construct(ImageResizerService $imageResizerService)
+    public function __construct(ImageResizerService $imageResizerService, array $options = [])
     {
-        $this->setImageResizerService($imageResizerService);
+        $this->setOptions(array_merge($this->options, $options))
+             ->setImageResizerService($imageResizerService);
     }
 
     /**
@@ -48,10 +47,48 @@ class ImageResizer extends AbstractFilter
      */
     public function filter($value)
     {
-        try {
-            $this->getImageResizerService()->resize($value['tmp_name']);
-        } catch (Exception $exception) {
-            throw $exception;
+        switch ($this->getMode()) {
+            case Image::ONLY_RESIZE_MODUS:
+                try {
+                    $this->getImageResizerService()->resizeImage(
+                        $value['tmp_name'],
+                        $this->getResizeWidth(),
+                        $this->getResizeHeight()
+                    );
+                } catch (Exception $exception) {
+                    throw $exception;
+                }
+            break;
+            case Image::ONLY_CROP_MODUS:
+                try {
+                    $this->getImageResizerService()->cropImage(
+                        $value['tmp_name'],
+                        $this->getCropWidth(),
+                        $this->getCropHeight(),
+                        $this->getCropMode(),
+                        $this->getX(),
+                        $this->getY()
+                    );
+                } catch (Exception $exception) {
+                    throw $exception;
+                }
+            break;
+            case Image::CROP_AND_RESIZE_MODUS:
+                try {
+                    $this->getImageResizerService()->cropAndResize(
+                        $value['tmp_name'],
+                        $this->getCropWidth(),
+                        $this->getCropHeight(),
+                        $this->getResizeWidth(),
+                        $this->getResizeHeight(),
+                        $this->getCropMode(),
+                        $this->getX(),
+                        $this->getY()
+                    );
+                } catch (Exception $exception) {
+                    throw $exception;
+                }
+            break;
         }
 
         return $value;
@@ -84,12 +121,58 @@ class ImageResizer extends AbstractFilter
     }
 
     /**
-     * @param string $mode
-     * @return self
+     * @return string
      */
-    public function setMode($mode = Image::ONLY_RESIZE_MODUS)
+    public function getCropMode()
     {
-        $this->options['mode'] = $mode;
-        return $this;
+        return $this->options['crop_mode'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getResizeWidth()
+    {
+        return $this->options['resize_width'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getResizeHeight()
+    {
+        return $this->options['resize_height'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCropWidth()
+    {
+        return $this->options['crop_width'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCropHeight()
+    {
+        return $this->options['crop_height'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getX()
+    {
+        return $this->options['x'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getY()
+    {
+        return $this->options['y'];
     }
 }

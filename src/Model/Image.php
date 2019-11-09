@@ -8,11 +8,11 @@ use SplFileInfo;
 class Image
 {
     const ONLY_RESIZE_MODUS     = 'resize';
-    const RESIZE_AND_CROP_MODUS = 'resize-and-crop';
+    const CROP_AND_RESIZE_MODUS = 'crop-and-resize';
     const ONLY_CROP_MODUS       = 'crop';
     const MODUS                 = [
         self::ONLY_RESIZE_MODUS,
-        self::RESIZE_AND_CROP_MODUS,
+        self::CROP_AND_RESIZE_MODUS,
         self::ONLY_CROP_MODUS,
     ];
 

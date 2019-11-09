@@ -119,6 +119,44 @@ class ImageResizerService
         return $image->getTargetPath();
     }
 
+    /**
+     * @param string $imagePath
+     * @param int    $cropWidth
+     * @param int    $cropHeight
+     * @param int    $finalWidth
+     * @param int    $finalHeight
+     * @param string $mode
+     * @param int    $x
+     * @param int    $y
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function cropAndResize(string $imagePath, int $cropWidth, int $cropHeight, int $finalWidth, int $finalHeight, string $mode = Image::MANUAL_CROP, int $x = 0, int $y = 0): string
+    {
+        // If final width has not been set, set it to the cropWidth as a fallback
+        if ($finalWidth === 0) {
+            $finalWidth = $cropWidth;
+        }
+        // If final width has not been set, set it to the cropHeight as a fallback
+        if ($finalWidth === 0) {
+            $finalWidth = $cropWidth;
+        }
+
+        // First crop the image at the highest possible resolution for best effect
+        $resized = $resizedCropped = $this->cropImage($imagePath, $cropWidth, $cropHeight, $mode, $x, $y);
+
+        // Resize if the final height or width differs from the cropped width and height
+        if ($cropWidth !== $finalWidth || $cropHeight !== $finalHeight) {
+            // Resize that image to the desired final width and height
+            $resizedCropped = $this->resizeImage($resized, $finalWidth, $finalHeight);
+
+            // Delete the resized image, we dont need it anymore
+            unlink($resized);
+        }
+
+        // Return the cropped and resized image
+        return $resizedCropped;
+    }
 
     /**
      * @return ImageResizerInterface

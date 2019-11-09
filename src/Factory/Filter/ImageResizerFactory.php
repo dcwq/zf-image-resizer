@@ -14,6 +14,6 @@ class ImageResizerFactory implements FactoryInterface
         /** @var ImageResizerService $imageResizerService */
         $imageResizerService = $container->get(ImageResizerService::class);
 
-        return new ImageResizer($imageResizerService);
+        return new ImageResizer($imageResizerService, $options);
     }
 }
