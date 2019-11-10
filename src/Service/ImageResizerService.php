@@ -29,13 +29,6 @@ class ImageResizerService
     {
         $this->setLogger($logger);
         $this->getLogger()->info('Constucting ImageResizerService');
-
-        if (!$adapter instanceof ImageResizerInterface) {
-            throw new InvalidArgumentException(
-                sprintf('Adapter configured does not have the %s interface.', ImageResizerInterface::class)
-            );
-        }
-
         $this->setAdapter($adapter);
     }
 
