@@ -37,14 +37,6 @@ class ConsoleController extends AbstractActionController
         $width = (int) $this->params()->fromRoute('width', 100);
         /** @var int $height */
         $height = (int) $this->params()->fromRoute('height', 100);
-        /** @var string $modus */
-        $modus = $this->params()->fromRoute('modus', Image::ONLY_RESIZE_MODUS);
-        /** @var string $cropModus */
-        $cropModus = $this->params()->fromRoute('crop-modus', Image::CENTERED_CROP);
-        /** @var int $x */
-        $x = (int) $this->params()->fromRoute('x', 0);
-        /** @var int $y */
-        $y = (int) $this->params()->fromRoute('y', 0);
 
         try {
             $this->getImageResizerService()->resizeImage($image, $width, $height);
