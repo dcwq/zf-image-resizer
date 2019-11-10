@@ -4,6 +4,7 @@ namespace Rvdlee\ZfImageResizer\Controller;
 
 use Exception;
 use Rvdlee\ZfImageResizer\Exception\InvalidArgumentException;
+use Rvdlee\ZfImageResizer\Model\Image;
 use Rvdlee\ZfImageResizer\Service\ImageResizerService;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -28,48 +29,25 @@ class ConsoleController extends AbstractActionController
     {
         /** @var string $image */
         $image = $this->params()->fromRoute('image', null);
-        if ($image === null) {
-            throw new InvalidArgumentException('You need the --image|-i param.');
+        if ( ! file_exists($image)) {
+            throw new InvalidArgumentException('You need the --image|-i param to be an existing image.');
         }
 
-        /** @var string $width */
-        $width = $this->params()->fromRoute('width', null);
-        if ($width === null) {
-            throw new InvalidArgumentException('You need the --width|-w param.');
-        }
-
-        /** @var string $height */
-        $height = $this->params()->fromRoute('height', null);
-        if ($height === null) {
-            throw new InvalidArgumentException('You need the --height|-h param.');
-        }
-
+        /** @var int $width */
+        $width = (int) $this->params()->fromRoute('width', 100);
+        /** @var int $height */
+        $height = (int) $this->params()->fromRoute('height', 100);
         /** @var string $modus */
-        $modus = $this->params()->fromRoute('modus', null);
-        if ($modus === null) {
-            throw new InvalidArgumentException('You need the --modus|-m param.');
-        }
-
+        $modus = $this->params()->fromRoute('modus', Image::ONLY_RESIZE_MODUS);
         /** @var string $cropModus */
-        $cropModus = $this->params()->fromRoute('crop-modus', null);
-        if ($cropModus === null) {
-            throw new InvalidArgumentException('You need the --crop-modus|-cm param.');
-        }
-
-        /** @var string $x */
-        $x = $this->params()->fromRoute('x', null);
-        if ($x === null) {
-            throw new InvalidArgumentException('You need the --x|-x param.');
-        }
-
-        /** @var string $y */
-        $y = $this->params()->fromRoute('y', null);
-        if ($y === null) {
-            throw new InvalidArgumentException('You need the --y|-y param.');
-        }
+        $cropModus = $this->params()->fromRoute('crop-modus', Image::CENTERED_CROP);
+        /** @var int $x */
+        $x = (int) $this->params()->fromRoute('x', 0);
+        /** @var int $y */
+        $y = (int) $this->params()->fromRoute('y', 0);
 
         try {
-            $this->getImageResizerService()->resize($image);
+            $this->getImageResizerService()->resizeImage($image, $width, $height);
         } catch (Exception $exception) {
             throw $exception;
         }
