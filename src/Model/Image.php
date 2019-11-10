@@ -102,10 +102,8 @@ class Image
             throw new InvalidArgumentException(sprintf('The provided file(%s) does not exist.', $path));
         }
 
-        // Get the original image dimensions
+        // Get the original image dimensions and calculate ratio
         list($width, $height) = getimagesize($path);
-
-        // Calculate the ratio
         $ratio = ($width < $height ? $width : $height) / ($width > $height ? $width : $height);
 
         // If either of these is not set, scale to ratio
@@ -126,10 +124,19 @@ class Image
              ->setOriginalHeight($height)
              ->setTargetWidth($targetWidth)
              ->setTargetHeight($targetHeight)
-             ->calculateCropPositions($cropMode, $x, $y);
+             ->calculateCropPositions($cropMode, $x, $y)
+             ->setTargetPath($this->generateFileName());
+    }
 
-        // Create a new unique name based on the image vectors
-        $targetPath = str_replace(
+    /**
+     * Generate a new unique name based on all the image parameters
+     *
+     * @return mixed
+     */
+    public function generateFileName()
+    {
+        // Create a new unique name based on the image parameters
+        return str_replace(
             $this->getSplFileInfo()->getFilename(),
             sprintf(
                 '%s.%s',
@@ -148,10 +155,8 @@ class Image
             ),
             $this->getPath()
         );
-
-        // Set this
-        $this->setTargetPath($targetPath);
     }
+
 
     /**
      * @param string $cropMode
@@ -164,8 +169,7 @@ class Image
         string $cropMode = self::CENTERED_CROP,
         int $cropPositionX = 0,
         int $cropPositionY = 0
-    ) : Image
-    {
+    ): Image {
         // Check if we've recieved a valid crop modus
         if (!in_array($cropMode, self::CROP_MODUS)) {
             throw new InvalidArgumentException(
@@ -228,7 +232,7 @@ class Image
         }
 
         // Set the calculated crop positions and return this (fluent interface)
-        return  $this->setCropPositionX($cropPositionX)->setCropPositionY($cropPositionY);
+        return $this->setCropPositionX($cropPositionX)->setCropPositionY($cropPositionY);
     }
 
     /**
