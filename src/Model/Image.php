@@ -98,7 +98,7 @@ class Image
     public function __construct(string $path, int $targetWidth, int $targetHeight, string $cropMode = self::CENTERED_CROP, int $x = 0, int $y = 0)
     {
         // Check if given path exists
-        if (!file_exists($path)) {
+        if ( ! file_exists($path)) {
             throw new InvalidArgumentException(sprintf('The provided file(%s) does not exist.', $path));
         }
 
@@ -171,7 +171,7 @@ class Image
         int $cropPositionY = 0
     ): Image {
         // Check if we've recieved a valid crop modus
-        if (!in_array($cropMode, self::CROP_MODUS)) {
+        if ( ! in_array($cropMode, self::CROP_MODUS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Crop mode \'%s\' is not a valid mode. Choose one of the following %s',

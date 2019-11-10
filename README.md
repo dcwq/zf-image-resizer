@@ -1,3 +1,11 @@
+# ZF3 Package to resize images
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/rvdlee/zf-image-resizer.svg?style=flat-square)](https://packagist.org/packages/rvdlee/zf-image-resizer)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rvdlee/zf-image-resizer/badges/quality-score.png)](https://scrutinizer-ci.com/g/rvdlee/zf-image-resizer)
+[![Total Downloads](https://img.shields.io/packagist/dt/rvdlee/zf-image-resizer.svg?style=flat-square)](https://packagist.org/packages/rvdlee/zf-image-resizer)
+[![GitHub license](https://img.shields.io/github/license/rvdlee/zf-image-resizer.svg)](https://github.com/rvdlee/zf-image-resizer/blob/master/LICENSE)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/epicsoftworks)
+
 This is a image resizer package. I've written this with ZF3 in mind, everything is written with configuration over convention in mind. Highly extendible and easy in use. You can use this along side my other package to optimise images.
 
 Key features of this package is:
