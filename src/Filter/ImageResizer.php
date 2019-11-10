@@ -115,64 +115,64 @@ class ImageResizer extends AbstractFilter
     /**
      * @return string
      */
-    public function getMode()
+    public function getMode(): string
     {
-        return $this->options['mode'];
+        return (string) $this->options['mode'];
     }
 
     /**
      * @return string
      */
-    public function getCropMode()
+    public function getCropMode(): string
     {
         return $this->options['crop_mode'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getResizeWidth()
+    public function getResizeWidth(): int
     {
-        return $this->options['resize_width'];
+        return (int) $this->options['resize_width'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getResizeHeight()
+    public function getResizeHeight(): int
     {
-        return $this->options['resize_height'];
+        return (int) $this->options['resize_height'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCropWidth()
+    public function getCropWidth(): int
     {
-        return $this->options['crop_width'];
+        return (int) $this->options['crop_width'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCropHeight()
+    public function getCropHeight(): int
     {
-        return $this->options['crop_height'];
+        return (int) $this->options['crop_height'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getX()
+    public function getX(): int
     {
-        return $this->options['x'];
+        return (int) $this->options['x'];
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getY()
+    public function getY(): int
     {
-        return $this->options['y'];
+        return (int) $this->options['y'];
     }
 }
