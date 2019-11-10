@@ -3,6 +3,7 @@
 namespace Rvdlee\ZfImageResizer\Controller;
 
 use Exception;
+use Rvdlee\ZfImageResizer\Exception\InvalidArgumentException;
 use Rvdlee\ZfImageResizer\Service\ImageResizerService;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -28,43 +29,43 @@ class ConsoleController extends AbstractActionController
         /** @var string $image */
         $image = $this->params()->fromRoute('image', null);
         if ($image === null) {
-            die('You need the --image|-i param.');
+            throw new InvalidArgumentException('You need the --image|-i param.');
         }
 
         /** @var string $width */
         $width = $this->params()->fromRoute('width', null);
         if ($width === null) {
-            die('You need the --width|-w param.');
+            throw new InvalidArgumentException('You need the --width|-w param.');
         }
 
         /** @var string $height */
         $height = $this->params()->fromRoute('height', null);
         if ($height === null) {
-            die('You need the --height|-h param.');
+            throw new InvalidArgumentException('You need the --height|-h param.');
         }
 
         /** @var string $modus */
         $modus = $this->params()->fromRoute('modus', null);
         if ($modus === null) {
-            die('You need the --modus|-m param.');
+            throw new InvalidArgumentException('You need the --modus|-m param.');
         }
 
         /** @var string $cropModus */
         $cropModus = $this->params()->fromRoute('crop-modus', null);
         if ($cropModus === null) {
-            die('You need the --crop-modus|-cm param.');
+            throw new InvalidArgumentException('You need the --crop-modus|-cm param.');
         }
 
         /** @var string $x */
         $x = $this->params()->fromRoute('x', null);
         if ($x === null) {
-            die('You need the --x|-x param.');
+            throw new InvalidArgumentException('You need the --x|-x param.');
         }
 
         /** @var string $y */
         $y = $this->params()->fromRoute('y', null);
         if ($y === null) {
-            die('You need the --y|-y param.');
+            throw new InvalidArgumentException('You need the --y|-y param.');
         }
 
         try {
