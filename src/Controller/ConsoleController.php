@@ -26,43 +26,43 @@ class ConsoleController extends AbstractActionController
     public function resizeImageAction()
     {
         /** @var string $image */
-        $image = $this->params()->fromRoute('image');
+        $image = $this->params()->fromRoute('image', null);
         if ($image === null) {
             die('You need the --image|-i param.');
         }
 
         /** @var string $width */
-        $width = $this->params()->fromRoute('width');
+        $width = $this->params()->fromRoute('width', null);
         if ($width === null) {
             die('You need the --width|-w param.');
         }
 
         /** @var string $height */
-        $height = $this->params()->fromRoute('height');
+        $height = $this->params()->fromRoute('height', null);
         if ($height === null) {
             die('You need the --height|-h param.');
         }
 
         /** @var string $modus */
-        $modus = $this->params()->fromRoute('modus');
+        $modus = $this->params()->fromRoute('modus', null);
         if ($modus === null) {
             die('You need the --modus|-m param.');
         }
 
         /** @var string $cropModus */
-        $cropModus = $this->params()->fromRoute('crop-modus');
+        $cropModus = $this->params()->fromRoute('crop-modus', null);
         if ($cropModus === null) {
             die('You need the --crop-modus|-cm param.');
         }
 
         /** @var string $x */
-        $x = $this->params()->fromRoute('x');
+        $x = $this->params()->fromRoute('x', null);
         if ($x === null) {
             die('You need the --x|-x param.');
         }
 
         /** @var string $y */
-        $y = $this->params()->fromRoute('y');
+        $y = $this->params()->fromRoute('y', null);
         if ($y === null) {
             die('You need the --y|-y param.');
         }
