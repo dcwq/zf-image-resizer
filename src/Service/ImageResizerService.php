@@ -152,6 +152,80 @@ class ImageResizerService
     }
 
     /**
+     * @param string $filepath
+     * @param int $width
+     * @param int $height
+     * @return string
+     * @throws \Gumlet\ImageResizeException
+     */
+    public function scaleAndCropThumbnail(string $filepath, int $width, int $height): string
+    {
+        [$orginalWidth, $originalHeight] = getimagesize($filepath);
+        $ratio = ($orginalWidth > $originalHeight ? $orginalWidth : $originalHeight) / ($orginalWidth < $originalHeight ? $orginalWidth : $originalHeight);
+
+        if ($orginalWidth > $originalHeight) {
+            $targetWidth = $height * $ratio;
+            $scaledImage = $this->scaleThumbnail($filepath, $targetWidth, $height);
+        } else {
+            $targetHeight = $width * $ratio;
+            $scaledImage = $this->scaleThumbnail($filepath, $width, $targetHeight);
+        }
+
+        $thumbpath = $this->generateThumbFilepath($filepath);
+
+        // Crop the scaled image for best result
+        $croppedImage = $this->cropImage($scaledImage, $width, $height, Image::CENTERED_CROP);
+
+        // Delete the scaled image, this only served for improved thumb quality
+        unlink($scaledImage);
+
+        return $croppedImage;
+    }
+
+    /**
+     * Scale by ratio, width or height is optional but one needs to be provided, it will calculate the
+     * ratio by either one of these.
+     *
+     * @param string $filepath
+     * @param int $targetWidth
+     * @param int $targetHeight
+     * @return string
+     * @throws \Gumlet\ImageResizeException
+     */
+    public function scaleThumbnail(string $filepath, int $targetWidth = 0, int $targetHeight = 0)
+    {
+        if (!file_exists($filepath) && is_file($filepath)) {
+            throw new InvalidArgumentException('File does not exist!');
+        }
+
+        if ($targetHeight >! 0 || $targetWidth >! 0) {
+            throw new InvalidArgumentException('targetWidth or targetHeight needs to be defined.');
+        }
+
+        return $this->resizeImage($filepath, $targetWidth, $targetHeight);
+    }
+
+    public function generateThumbFilepath(string $filepath): string
+    {
+        // Extract the basename out of the path
+        $filename = basename($filepath);
+        // Get the filepath
+        $explodedFilepath = explode(DIRECTORY_SEPARATOR, $filepath);
+        // Reconstruct the base file path
+        $baseFilepath = implode(DIRECTORY_SEPARATOR, array_slice($explodedFilepath, 0, count($explodedFilepath)-1));
+        // Explode the filename
+        $explodedFilename = explode('.', $filename);
+        // Generate new name
+        $thumbname = sprintf(
+            '%s.%s',
+            bin2hex(random_bytes(64)),
+            end($explodedFilename)
+        );
+
+        return $baseFilepath . DIRECTORY_SEPARATOR . $thumbname;
+    }
+
+    /**
      * @return ImageResizerInterface
      */
     public function getAdapter(): ImageResizerInterface

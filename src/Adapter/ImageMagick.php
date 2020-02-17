@@ -14,7 +14,7 @@ class ImageMagick extends AbstractImageResizer
     public function resizeCommand(Image $image, bool $returnBase64 = false): string
     {
         return sprintf(
-            'convert %s -resize %dx%d %s',
+            'convert %s -quality 100 -resize %dx%d %s',
             $image->getPath(),
             $image->getTargetWidth(),
             $image->getTargetHeight(),
