@@ -20,6 +20,7 @@ class ImageResizer extends AbstractFilter
     protected $options = [
         'mode'          => Image::ONLY_RESIZE_MODUS,
         'crop_mode'     => Image::CENTERED_CROP,
+        'sizes'         => [],
         'resize_width'  => 0,
         'resize_height' => 0,
         'crop_width'    => 0,
@@ -42,6 +43,7 @@ class ImageResizer extends AbstractFilter
 
     /**
      * @param mixed $value
+     *
      * @return mixed
      * @throws Exception
      */
@@ -97,25 +99,27 @@ class ImageResizer extends AbstractFilter
     /**
      * @return ImageResizerService
      */
-    public function getImageResizerService(): ImageResizerService
+    public function getImageResizerService() : ImageResizerService
     {
         return $this->imageResizerService;
     }
 
     /**
      * @param ImageResizerService $imageResizerService
+     *
      * @return ImageResizer
      */
-    public function setImageResizerService(ImageResizerService $imageResizerService): ImageResizer
+    public function setImageResizerService(ImageResizerService $imageResizerService) : ImageResizer
     {
         $this->imageResizerService = $imageResizerService;
+
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getMode(): string
+    public function getMode() : string
     {
         return (string) $this->options['mode'];
     }
@@ -123,7 +127,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return string
      */
-    public function getCropMode(): string
+    public function getCropMode() : string
     {
         return $this->options['crop_mode'];
     }
@@ -131,7 +135,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getResizeWidth(): int
+    public function getResizeWidth() : int
     {
         return (int) $this->options['resize_width'];
     }
@@ -139,7 +143,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getResizeHeight(): int
+    public function getResizeHeight() : int
     {
         return (int) $this->options['resize_height'];
     }
@@ -147,7 +151,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getCropWidth(): int
+    public function getCropWidth() : int
     {
         return (int) $this->options['crop_width'];
     }
@@ -155,7 +159,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getCropHeight(): int
+    public function getCropHeight() : int
     {
         return (int) $this->options['crop_height'];
     }
@@ -163,7 +167,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getX(): int
+    public function getX() : int
     {
         return (int) $this->options['x'];
     }
@@ -171,7 +175,7 @@ class ImageResizer extends AbstractFilter
     /**
      * @return int
      */
-    public function getY(): int
+    public function getY() : int
     {
         return (int) $this->options['y'];
     }

@@ -135,26 +135,22 @@ class Image
      */
     public function generateFileName()
     {
-        // Create a new unique name based on the image parameters
-        return str_replace(
-            $this->getSplFileInfo()->getFilename(),
-            sprintf(
-                '%s.%s',
-                hash(
-                    'sha256',
-                    sprintf(
-                        '%s%d%d%d%d',
-                        explode('.', $this->getSplFileInfo()->getFilename())[0],
-                        $this->getTargetWidth(),
-                        $this->getTargetHeight(),
-                        $this->getCropPositionX(),
-                        $this->getCropPositionY()
-                    )
-                ),
-                $this->getSplFileInfo()->getExtension()
-            ),
-            $this->getPath()
+        // Extract the basename out of the path
+        $filename = basename($this->getPath());
+        // Get the filepath
+        $explodedFilepath = explode(DIRECTORY_SEPARATOR, $this->getPath());
+        // Reconstruct the base file path
+        $baseFilepath = implode(DIRECTORY_SEPARATOR, array_slice($explodedFilepath, 0, count($explodedFilepath)-1));
+        // Explode the filename
+        $explodedFilename = explode('.', $filename);
+        // Generate new name
+        $thumbname = sprintf(
+            '%s.%s',
+            bin2hex(random_bytes(64)),
+            end($explodedFilename)
         );
+
+        return $baseFilepath . DIRECTORY_SEPARATOR . $thumbname;
     }
 
 
