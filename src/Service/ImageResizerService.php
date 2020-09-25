@@ -164,11 +164,11 @@ class ImageResizerService
         $ratio = ($orginalWidth > $originalHeight ? $orginalWidth : $originalHeight) / ($orginalWidth < $originalHeight ? $orginalWidth : $originalHeight);
 
         if ($orginalWidth > $originalHeight) {
-            $targetWidth = $height * $ratio;
-            $scaledImage = $this->scaleThumbnail($filepath, $targetWidth, $height);
+            $targetWidth = round($height * $ratio);
+            $scaledImage = $this->scaleThumbnail($filepath, (int) $targetWidth, $height);
         } else {
-            $targetHeight = $width * $ratio;
-            $scaledImage = $this->scaleThumbnail($filepath, $width, $targetHeight);
+            $targetHeight = round($width * $ratio);
+            $scaledImage = $this->scaleThumbnail($filepath, $width, (int) $targetHeight);
         }
 
         $thumbpath = $this->generateThumbFilepath($filepath);
